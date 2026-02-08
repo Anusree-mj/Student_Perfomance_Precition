@@ -1,12 +1,5 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from xgboost import XGBRegressor
-from sklearn.metrics import r2_score, mean_squared_error
-
-import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
@@ -19,7 +12,6 @@ from sklearn.metrics import r2_score, mean_squared_error
 def load_and_preprocess(filepath):
     df = pd.read_csv(filepath, sep=';')
 
-    # Label Encoding for categorical strings
     le = LabelEncoder()
     for col in df.select_dtypes(include=['object']).columns:
         df[col] = le.fit_transform(df[col])
@@ -27,7 +19,6 @@ def load_and_preprocess(filepath):
     X = df.drop(['G3'], axis=1)
     y = df['G3']
 
-    # SVM and Linear Regression perform better with scaled features
     scaler = StandardScaler()
     X_scaled = pd.DataFrame(scaler.fit_transform(X), columns=X.columns)
 

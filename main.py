@@ -5,30 +5,31 @@ from explainability import generate_shap_plots, generate_lime_explanation, visua
 
 
 def run_project():
-    # 1. Prep Data (Scales data for SVM/Linear Regression baseline)
-    print("--- Loading and Preprocessing Data ---")
+    # 1. preparing data
+    print("loading and preprocessing data")
     X_train, X_test, y_train, y_test = load_and_preprocess('student-mat.csv')
 
-    # 2. Train All Models (Baseline + Advanced Ensembles)
-    print("\n--- Training Models ---")
+    # 2. training all models
+    print("\n training models")
     trained_models, results = train_all_models(X_train, y_train, X_test, y_test)
 
-    # 3. Visualize Performance Comparison
-    # This creates the bar chart comparing R2 scores for your report
-    print("\n--- Generating Performance Visualization ---")
+    # 3. visualizing perfomance comparison, creating the bar chart comparing r2 scores of the report
+    print("\n generating performance visualization")
     visualize_performance(results)
 
-    # 4. Save the Best Model for the Streamlit UI
-    # We choose XGBoost as the 'best_model' based on your abstract's focus
-    best_model = trained_models["XGBoost"]
-    joblib.dump(best_model, 'best_model.pkl')
-    print("\n✅ Best model (XGBoost) saved as 'best_model.pkl' for Streamlit.")
+    # 4. finding and saving the best model
+    best_model_name = max(results, key=lambda k: results[k]["R2"])
+    best_model = trained_models[best_model_name]
 
-    # 5. Explainability (Global and Local)
-    print("\n--- Generating Interpretability Reports ---")
+    print(f"best model selected dynamically: {best_model_name}")
+    joblib.dump(best_model, 'best_model.pkl')
+
+    # 5. explainability
+    print("\ngenerating explainaibiltiy plot")
+    print("\n shap::::")
     generate_shap_plots(best_model, X_test)
 
-    # We pass .values here to avoid the KeyError we saw earlier
+    print("\n lime::::")
     generate_lime_explanation(best_model, X_train, X_test, instance_index=5)
 
 
